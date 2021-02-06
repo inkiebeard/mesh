@@ -1,36 +1,54 @@
-class MshNode {
-  constructor (opts) {
-    this.inputs = opts.inputs
-    this.outputs = opts.outputs
-    this.process = opts.process
+import uuid from './libs/uuid'
+
+// Node
+class N {
+  constructor (config) {
+    this.id = uuid()
+    this.type = 'node'
+    this.inputs = config.inputs || []
+    this.outputs = config.outputs || []
+    this.process = config.process || function() { return false }
+    this.callback = config.callback || function({err, data}) { console.log(err, data) }
   }
-  get input(name) {
+  get allInputsHaveValues () {
+    const empty = this.inputs.filter(i => (i.value === undefined || i.value === null) && !i.isNullable)
+    return empty.length === 0
+  }
+  getInput(name) {
     return this.inputs.find(i => i.name === name)
   }
-  set input(name, val, process = true) {
+  setInput(name, val, process = true) {
     const ind = this.inputs.findIndex(i => i.name === name)
     this.inputs[ind].value = val
-    If (process) {
+    if (process) {
       this.doProcess()
     }
   }
-  get output(name) {
+  getOutput(name) {
     return this.outputs.find(o => o.name === name)
   }
-  set output(name, val) {
+  setOutput(name, val) {
     const ind = this.outputs.findIndex(o => o.name === name)
     this.outputs[ind].value = val
   }
   doProcess () {
-    const arguments = {}
+    const args = {}
     this.inputs.map(i => {
-      arguments[i.name] = i.value
-    }
-    this.process(arguments, this.callback)
+      args[i.name] = i.value
+    })
+    this.process(args, this.callback)
   }
-  callback(result) {
-     Object.keys(result).forEach(key => {
-       this.output(key, result[key]
-     }
+  callback({err, data}) {
+    if (err === null) {
+      Object.keys(data).forEach(key => {
+        this.setOutput(key, data[key])
+      })
+    } else {
+      if ($_MeshLogger) {
+        $_MeshLogger.log({content: [`Mesh node process error: ${err.message}`, (err.meta ? JSON.stringify(err.meta, null, 2) : '  no meta received for error')], source: this, level: 'ALL'})
+      } else {
+        console.error(`Mesh node process error: ${err.message}`, (err.meta ? JSON.stringify(err.meta, null, 2) : '  no meta received for error'))
+      }
+    }
   }
 }
