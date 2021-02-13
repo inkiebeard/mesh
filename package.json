@@ -1,0 +1,33 @@
+{
+  "name": "mesh",
+  "version": "1.0.0",
+  "description": "IPO mesh to make the complex simple &amp; the simple complex",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src -d lib",
+    "test": "node  -e \"console.log('tests no implemented');\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inkiebeard/mesh.git"
+  },
+  "keywords": [
+    "mesh",
+    "node",
+    "ipo",
+    "lib"
+  ],
+  "author": "Aaron Toomey <aaron@inkiebeard.codes> (https://inkiebeard.codes)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/inkiebeard/mesh/issues"
+  },
+  "homepage": "https://github.com/inkiebeard/mesh#readme",
+  "dependencies": {
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
+  }
+}
